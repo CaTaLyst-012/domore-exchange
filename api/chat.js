@@ -1,11 +1,13 @@
 export default async function handler(req, res) {
+  console.log("GROQ_API_KEY present?", !!process.env.GROQ_API_KEY);
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    // Vercel already parses JSON for Node functions, but be defensive:
-    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
+    const body =
+      typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
     const { messages } = body;
 
     if (!Array.isArray(messages) || messages.length === 0) {
