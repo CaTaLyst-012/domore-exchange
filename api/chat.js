@@ -4,8 +4,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-    const { messages } = body || {};
+    // Vercel already parses JSON for Node functions, but be defensive:
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
+    const { messages } = body;
 
     if (!Array.isArray(messages) || messages.length === 0) {
       return res.status(400).json({ error: "messages array is required" });
@@ -13,10 +14,10 @@ export default async function handler(req, res) {
 
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
+      console.error("GROQ_API_KEY missing");
       return res.status(500).json({ error: "GROQ_API_KEY not set on server" });
     }
 
-    // Convert your simple messages into chat format
     const groqMessages = [
       {
         role: "system",
@@ -29,26 +30,34 @@ export default async function handler(req, res) {
       })),
     ];
 
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "llama3-8b-8192", // free Groq chat model
-        messages: groqMessages,
-        temperature: 0.4,
-      }),
-    });
+    const groqResponse = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "llama3-8b-8192",
+          messages: groqMessages,
+          temperature: 0.4,
+        }),
+      }
+    );
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(500).json({ error: "Groq API error", details: errorText });
+    if (!groqResponse.ok) {
+      const errorText = await groqResponse.text();
+      console.error("Groq API error:", errorText);
+      return res
+        .status(500)
+        .json({ error: "Groq API error", details: errorText });
     }
 
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content?.trim() || "";
+    const data = await groqResponse.json();
+    const content =
+      data?.choices?.[0]?.message?.content?.trim() ||
+      "Sorry, I could not generate a response right now.";
 
     return res.status(200).json({ reply: content });
   } catch (err) {
