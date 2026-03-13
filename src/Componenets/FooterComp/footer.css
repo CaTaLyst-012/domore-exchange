@@ -1,0 +1,131 @@
+.footer {
+  margin-top: 4rem;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--surface-soft);
+}
+
+.footer__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.footer__brand {
+  max-width: 520px;
+}
+
+.footer__logo {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin-bottom: 0.4rem;
+}
+
+.footer__logo-main {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.footer__logo-accent {
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
+  color: var(--accent); /* your orange */
+}
+
+.footer__tagline {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Grid */
+.footer__grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .footer__grid {
+    grid-template-columns: 2fr 1.2fr 1.2fr;
+    align-items: flex-start;
+  }
+}
+
+.footer__column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.footer__heading {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--text-primary);
+}
+
+/* Links */
+.footer__link {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 0.15rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer__link:hover {
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.footer__meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Socials */
+.footer__socials {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.footer__social {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.footer__social:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Bottom bar */
+.footer__bottom {
+  border-top: 1px solid var(--border-subtle);
+  padding: 0.9rem 1.5rem 1.2rem;
+  text-align: center;
+  background: var(--surface-soft);
+}
+
+.footer__copy {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
