@@ -20,16 +20,15 @@ const Chatbot = () => {
   const messagesEndRef = useRef(null);
 
   // auto-scroll to bottom on new messages (inside the messages container)
-useEffect(() => {
-  const container = messagesEndRef.current?.parentElement;
-  if (!container) return;
+  useEffect(() => {
+    const container = messagesEndRef.current?.parentElement;
+    if (!container) return;
 
-  container.scrollTo({
-    top: container.scrollHeight,
-    behavior: "smooth",
-  });
-}, [messages]);
-
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,7 +46,7 @@ useEffect(() => {
     setInput("");
 
     try {
-      const response = await fetch("http://localhost:4000/api/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +92,8 @@ useEffect(() => {
       <section className="chatbot__intro">
         <h1 className="chatbot__title">DOMORE Assistant</h1>
         <p className="chatbot__subtitle">
-          Ask quick questions about crypto trading, gift card redemption, and how DOMORE EXCHANGE works.
+          Ask quick questions about crypto trading, gift card redemption, and
+          how DOMORE EXCHANGE works.
         </p>
         <ul className="chatbot__list">
           <li className="chatbot__list-item">
@@ -107,7 +107,8 @@ useEffect(() => {
           </li>
         </ul>
         <p className="chatbot__note">
-          For live rates and real trades, please use the forms on the home page and continue on WhatsApp.
+          For live rates and real trades, please use the forms on the home page
+          and continue on WhatsApp.
         </p>
       </section>
 
@@ -117,7 +118,9 @@ useEffect(() => {
             <div className="chatbot__avatar">D</div>
             <div>
               <div className="chatbot__name">DOMORE Assistant</div>
-              <div className="chatbot__status">Usually replies in a few minutes</div>
+              <div className="chatbot__status">
+                Usually replies in a few minutes
+              </div>
             </div>
           </header>
 
