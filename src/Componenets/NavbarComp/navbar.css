@@ -4,7 +4,6 @@
   --navbar-text: var(--text-main);
 }
 
-
 .navbar {
   position: fixed;
   top: 0;
@@ -32,6 +31,7 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   font-size: 1.1rem;
+  cursor: pointer;
 }
 
 .navbar__logo-main {
@@ -43,11 +43,39 @@
   margin-left: 0.25rem;
 }
 
-/* Links */
+/* Links base */
 .navbar__links {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+}
+
+/* Desktop links visible */
+.navbar__links--desktop {
+  display: flex;
+}
+
+/* Mobile links panel (right-side, slim) */
+.navbar__links--mobile {
+  display: none;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem 1rem;
+  border-radius: 0.75rem 0 0 0.75rem;
+  background-color: var(--navbar-bg);
+  border: 1px solid var(--border-subtle);
+
+  position: fixed;
+  top: 56px; /* adjust to your navbar height */
+  right: 0;
+  max-width: 220px;
+  width: 70%;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.45);
+  z-index: 60;
+}
+
+.navbar__links--mobile-open {
+  display: flex;
 }
 
 .navbar__link {
@@ -58,7 +86,8 @@
   padding: 0.15rem 0;
 }
 
-.navbar__link::after {
+/* underline only for normal links, not button-style CTA */
+.navbar__link:not(.navbar__link--button)::after {
   content: "";
   position: absolute;
   left: 0;
@@ -69,28 +98,35 @@
   transition: width 0.2s ease;
 }
 
-.navbar__link:hover::after,
-.navbar__link.active::after {
+.navbar__link:not(.navbar__link--button):hover::after,
+.navbar__link:not(.navbar__link--button).active::after {
   width: 100%;
 }
 
-/* Contact dropdown */
-.navbar__contact {
+
+/* Button-style CTA inside mobile menu */
+.navbar__link--button {
+  border: none;
   cursor: pointer;
-  position: relative; /* important for dropdown positioning */
+  font: inherit;
+  text-align: center;
+
+  margin-top: 0.25rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ea580c, #f97316);
+  color: #f9fafb;
+  white-space: nowrap;
 }
 
-.navbar__contact-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 0.4rem;
-  background-color: var(--navbar-bg);
-  border: 1px solid var(--border-subtle);
-  border-radius: 0.5rem;
-  padding: 0.4rem 0;
-  min-width: 170px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.45);
+.navbar__link--button:hover {
+  filter: brightness(1.05);
+}
+
+/* Contact dropdown (desktop) */
+.navbar__contact {
+  cursor: pointer;
+  position: relative;
 }
 
 .navbar__contact-dropdown {
@@ -137,6 +173,12 @@
   color: #25d366;
 }
 
+/* Mobile contact block in mobile menu */
+.navbar__mobile-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
 /* Right side */
 .navbar__right {
@@ -183,6 +225,32 @@
   filter: brightness(1.05);
 }
 
+/* CTA only on desktop */
+.navbar__cta--desktop {
+  display: inline-flex;
+}
+
+/* Hamburger (mobile only) */
+.navbar__hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--navbar-text);
+  cursor: pointer;
+}
+
+.navbar__hamburger-line {
+  height: 2px;
+  width: 100%;
+  background-color: currentColor;
+  border-radius: 999px;
+}
+
 /* Small screens */
 @media (max-width: 768px) {
   .navbar__inner {
@@ -190,8 +258,18 @@
     gap: 0.75rem;
   }
 
-  .navbar__links {
-    display: none; /* later you can add a mobile menu */
+  /* Hide desktop links and CTA */
+  .navbar__links--desktop {
+    display: none;
+  }
+
+  .navbar__cta--desktop {
+    display: none;
+  }
+
+  /* Show hamburger */
+  .navbar__hamburger {
+    display: flex;
   }
 
   .navbar__logo {

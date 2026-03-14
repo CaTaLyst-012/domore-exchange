@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import "./chatBot.css";
 
@@ -20,70 +19,74 @@ const Chatbot = () => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
-  // auto-scroll to bottom on new messages
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
+  // auto-scroll to bottom on new messages (inside the messages container)
+useEffect(() => {
+  const container = messagesEndRef.current?.parentElement;
+  if (!container) return;
+
+  container.scrollTo({
+    top: container.scrollHeight,
+    behavior: "smooth",
+  });
+}, [messages]);
+
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const trimmed = input.trim();
-  if (!trimmed) return;
+    e.preventDefault();
+    const trimmed = input.trim();
+    if (!trimmed) return;
 
-  const userMessage = {
-    id: Date.now(),
-    sender: "user",
-    text: trimmed,
-  };
+    const userMessage = {
+      id: Date.now(),
+      sender: "user",
+      text: trimmed,
+    };
 
-  // Add user message immediately
-  setMessages((prev) => [...prev, userMessage]);
-  setInput("");
+    // Add user message immediately
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
 
-  try {
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        messages: [...messages, userMessage].map((m) => ({
-          sender: m.sender,
-          text: m.text,
-        })),
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:4000/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map((m) => ({
+            sender: m.sender,
+            text: m.text,
+          })),
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to reach chat API");
+      if (!response.ok) {
+        throw new Error("Failed to reach chat API");
+      }
+
+      const data = await response.json();
+      const botText =
+        data.reply ||
+        "Sorry, I couldn't process that right now. Please try again or start a trade directly on WhatsApp from the home page.";
+
+      const botMessage = {
+        id: Date.now() + 1,
+        sender: "bot",
+        text: botText,
+      };
+
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error(error);
+      const errorMessage = {
+        id: Date.now() + 2,
+        sender: "bot",
+        text:
+          "There was a problem talking to DOMORE Assistant. Please try again later or use WhatsApp on the home page for help.",
+      };
+      setMessages((prev) => [...prev, errorMessage]);
     }
-
-    const data = await response.json();
-    const botText =
-      data.reply ||
-      "Sorry, I couldn't process that right now. Please try again or start a trade directly on WhatsApp from the home page.";
-
-    const botMessage = {
-      id: Date.now() + 1,
-      sender: "bot",
-      text: botText,
-    };
-
-    setMessages((prev) => [...prev, botMessage]);
-  } catch (error) {
-    console.error(error);
-    const errorMessage = {
-      id: Date.now() + 2,
-      sender: "bot",
-      text:
-        "There was a problem talking to DOMORE Assistant. Please try again later or use WhatsApp on the home page for help.",
-    };
-    setMessages((prev) => [...prev, errorMessage]);
-  }
-};
-
+  };
 
   return (
     <main className="chatbot">
@@ -118,6 +121,7 @@ const Chatbot = () => {
             </div>
           </header>
 
+          {/* Confined, scrollable messages area */}
           <div className="chatbot__messages">
             {messages.map((msg) => (
               <div
